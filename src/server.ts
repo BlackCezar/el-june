@@ -5,11 +5,19 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import mongoose from "mongoose";
 import Users from "./models/Users";
+import IUser from './interfaces/users';
 import bcrypt from 'bcrypt'
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
+
+declare module 'express-session' {
+  interface SessionData {
+    user: IUser;
+    isAuth: boolean;
+  }
+}
 
 import usersRouter from './routes/users'
 import groupsRouter from './routes/groups'
@@ -44,6 +52,8 @@ app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
   start()
 })
+
+
 
 async function start() {
   try {

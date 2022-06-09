@@ -12,6 +12,15 @@ const get = async (req: Request, res: Response) => {
 	})
 }
 
+const check = async (req: Request, res: Response) => {
+	if (req.session.isAuth) {
+		res.json({
+			code: 0,
+			object: req.session.user
+		})
+	} else res.sendStatus(403)
+}
+
 const auth = async (req: Request, res: Response) => {
 	const {login, password} = req.body
 
@@ -19,6 +28,9 @@ const auth = async (req: Request, res: Response) => {
 
 	if (user) {
 		if (await bcrypt.compare(password, user.password)) {
+			req.session.isAuth = true 
+			req.session.user = user 
+
 			res.json({
 				code: 0,
 				object: user
@@ -31,6 +43,12 @@ const auth = async (req: Request, res: Response) => {
 			code: 404,
 			message: 'Пользователь не найден'
 		})
+}
+
+const logout = async (req: Request, res: Response) => {
+	//@ts-ignore
+	req.session.destroy()
+	res.json({code: 0})
 }
 
 const list = async (req: Request, res: Response) => {
@@ -51,15 +69,6 @@ const create = async (req: Request, res: Response) => {
 	})
 }
 
-const remove = async (req: Request, res: Response) => {
-	const users = await Users.find().exec()
-
-	res.json({
-		code: 0,
-		array: users
-	})
-}
-
 const update = async (req: Request, res: Response) => {
 	const users = await Users.find().exec()
 
@@ -69,4 +78,4 @@ const update = async (req: Request, res: Response) => {
 	})
 }
 
-export default {get, list, create, remove, update, auth}
+export default {get, list, create, update, auth, logout, check}
