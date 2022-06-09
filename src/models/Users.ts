@@ -8,6 +8,7 @@ const userSchema: Schema = new Schema({
     },
     login: {
         type: String,
+        unique: true,
         required: true
     },
     password: {
@@ -24,7 +25,7 @@ const userSchema: Schema = new Schema({
     parent: {
         type: Schema.Types.ObjectId,
         ref: 'Users',
-        required: true
+        required: false
     },
     address: String
 }, {

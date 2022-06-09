@@ -1,6 +1,11 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
 import mongoose from "mongoose";
+import Users from "./models/Users";
+import bcrypt from 'bcrypt'
 dotenv.config();
 
 const app: Express = express();
@@ -17,6 +22,15 @@ import classroomsRouter from './routes/classrooms'
 app.get('/', (req: Request, res: Response) => {
   res.send('Express + TypeScript Server');
 });
+app.use(cors())
+app.use(cookieParser())
+app.use(express.json());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'key',
+    saveUninitialized: true
+  }))
 
 app.use('/api/users', usersRouter)
 app.use('/api/groups', groupsRouter)
@@ -29,7 +43,7 @@ app.use('/api/classrooms', classroomsRouter)
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
   start()
-});
+})
 
 async function start() {
   try {
@@ -39,9 +53,18 @@ async function start() {
       }
     }
     await mongoose.connect(configDB.url, configDB.options)
+
+    const admin = await Users.findOne({login: process.env.ADMIN_LOGIN})
+    if (!admin) {
+      await Users.create({
+        login: process.env.ADMIN_LOGIN || 'admin',
+        password: await bcrypt.hash(process.env.ADMIN_PASS || 'admin', 10),
+        role: 'Admin',
+        fullname: 'Administrator'
+      })
+    }
     console.log('Mongoose connected')
   } catch (err) {
     console.log(err)
   }
-
 }
