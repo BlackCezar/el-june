@@ -9,6 +9,7 @@ router.get('/logout', controller.logout)
 router.get('/check', controller.check)
 router.get('/:id', controller.get)
 router.post('/', controller.create)
+router.delete('/:id', controller.remove)
 router.put('/:id', controller.update)
 
 export = router

@@ -52,7 +52,8 @@ const logout = async (req: Request, res: Response) => {
 }
 
 const list = async (req: Request, res: Response) => {
-	const users = await Users.find().exec()
+	const params = req.query
+	const users = await Users.find(params).exec()
 
 	res.json({
 		code: 0,
@@ -61,21 +62,46 @@ const list = async (req: Request, res: Response) => {
 }
 
 const create = async (req: Request, res: Response) => {
-	const users = await Users.find().exec()
+	const data = req.body
+
+	try {
+		const object = await Users.create({
+			...data
+		})
+
+		res.json({
+			code: 0,
+			object
+		})
+	} catch (err) {
+		res.status(400).send("Имя должно быть уникальным")
+	}
+}
+
+
+const remove = async (req: Request, res: Response) => {
+	const result = await Users.findByIdAndRemove(req.params.id).exec()
 
 	res.json({
 		code: 0,
-		array: users
+		object: result
 	})
 }
 
 const update = async (req: Request, res: Response) => {
-	const users = await Users.find().exec()
+	await Users.updateOne({_id: new Types.ObjectId(req.params.id)}, {
+		$set: {
+			...req.body
+		}
+	}).exec()
+
+	const object = await Users.findOne({_id: new Types.ObjectId(req.params.id)})
 
 	res.json({
 		code: 0,
-		array: users
+		object
 	})
 }
 
-export default {get, list, create, update, auth, logout, check}
+
+export default {get, list, create, update, auth, logout, check, remove}

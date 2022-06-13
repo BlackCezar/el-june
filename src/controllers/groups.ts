@@ -1,10 +1,10 @@
 import {Request, Response} from 'express'
 import {Types} from 'mongoose'
-import Users from './../models/Users'
 import Groups from "../models/Groups";
 
 const get = async (req: Request, res: Response) => {
-	const object = await Groups.findOne({_id: new Types.ObjectId(req.params.id)})
+	const id = req.params.id || ''
+	const object = await Groups.findOne({_id: new Types.ObjectId(id)}).populate('boss').populate('students')
 
 	res.json({
 		code: 0,
@@ -15,7 +15,7 @@ const get = async (req: Request, res: Response) => {
 const list = async (req: Request, res: Response) => {
 	const array = await Groups.find({
 		...req.params
-	}).exec()
+	}).populate('boss').populate('students').exec()
 
 	res.json({
 		code: 0,

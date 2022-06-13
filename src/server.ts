@@ -2,11 +2,16 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import session from 'express-session'
 import mongoose from "mongoose";
-import Users from "./models/Users";
 import IUser from './interfaces/users';
 import bcrypt from 'bcrypt'
+import Users from './models/Users'
+import Classrooms from './models/Classrooms'
+import Points from './models/Points'
+import Subjects from './models/Subjects'
+import Lessones from './models/Lessones'
+import Groups from './models/Groups'
+import Grades from './models/Grades'
 dotenv.config();
 
 const app: Express = express();
@@ -19,6 +24,7 @@ declare module 'express-session' {
   }
 }
 
+import session from 'express-session'
 import usersRouter from './routes/users'
 import groupsRouter from './routes/groups'
 import lessonsRouter from './routes/lessons'
@@ -57,6 +63,8 @@ app.listen(port, () => {
 
 async function start() {
   try {
+
+
     const configDB = {
       url: process.env.MONGO_USER ? `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_URL}` : `mongodb://${process.env.MONGO_URL}`,
       options: {
