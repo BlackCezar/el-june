@@ -27,6 +27,10 @@ const userSchema: Schema = new Schema({
         ref: 'Users',
         required: false
     },
+    group: {
+      type: Schema.Types.ObjectId,
+      ref: 'Groups'
+    },
     address: String
 }, {
     timestamps: true

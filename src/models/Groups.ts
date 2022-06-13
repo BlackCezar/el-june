@@ -4,17 +4,18 @@ import IGroup from '../interfaces/groups'
 const groupSchema: Schema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     boss: {
         type: Schema.Types.ObjectId,
         ref: 'Users',
-        required: true
+        required: false
     },
     students: {
         type: [Schema.Types.ObjectId],
         ref: 'Users',
-        required: true
+        required: false
     },
 }, {
     timestamps: true

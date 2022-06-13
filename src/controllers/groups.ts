@@ -1,49 +1,66 @@
 import {Request, Response} from 'express'
 import {Types} from 'mongoose'
 import Users from './../models/Users'
+import Groups from "../models/Groups";
 
 const get = async (req: Request, res: Response) => {
-	const user = await Users.findOne({_id: new Types.ObjectId(req.params.id)})
+	const object = await Groups.findOne({_id: new Types.ObjectId(req.params.id)})
 
 	res.json({
 		code: 0,
-		object: user
+		object
 	})
 }
 
 const list = async (req: Request, res: Response) => {
-	const users = await Users.find().exec()
+	const array = await Groups.find({
+		...req.params
+	}).exec()
 
 	res.json({
 		code: 0,
-		array: users
+		array
 	})
 }
 
 const create = async (req: Request, res: Response) => {
-	const users = await Users.find().exec()
+	const {name} = req.body
 
-	res.json({
-		code: 0,
-		array: users
-	})
+	try {
+		const object = await Groups.create({
+			name
+		})
+
+		res.json({
+			code: 0,
+			object: object
+		})
+	} catch (err) {
+		res.status(400).send("Имя должно быть уникальным")
+	}
 }
 
 const remove = async (req: Request, res: Response) => {
-	const users = await Users.find().exec()
+	const result = await Groups.findByIdAndRemove(req.params.id).exec()
 
 	res.json({
 		code: 0,
-		array: users
+		object: result
 	})
 }
 
 const update = async (req: Request, res: Response) => {
-	const users = await Users.find().exec()
+	await Groups.updateOne({_id: new Types.ObjectId(req.params.id)}, {
+		$set: {
+			...req.body
+		}
+	}).exec()
+
+	const object = await Groups.findOne({_id: new Types.ObjectId(req.params.id)})
 
 	res.json({
 		code: 0,
-		array: users
+		object
 	})
 }
 
