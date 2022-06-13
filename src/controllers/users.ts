@@ -53,7 +53,7 @@ const logout = async (req: Request, res: Response) => {
 
 const list = async (req: Request, res: Response) => {
 	const params = req.query
-	const users = await Users.find(params).exec()
+	const users = await Users.find(params).populate('parent').populate('group').exec()
 
 	res.json({
 		code: 0,
@@ -62,18 +62,28 @@ const list = async (req: Request, res: Response) => {
 }
 
 const create = async (req: Request, res: Response) => {
-	const data = req.body
-
+	let data = {
+		login: req.body.login,
+		phone: req.body.phone,
+		address: req.body.address,
+		role: req.body.role,
+		fullname: req.body.fullname,
+		password: await bcrypt.hash(req.body.password, 10),
+		parent: null,
+		group: null
+	}
+	if (req.body.parent) data.parent = req.body.parent
+	if (req.body.group) data.group = req.body.group
+	
 	try {
-		const object = await Users.create({
-			...data
-		})
+		const object = await Users.create(data)
 
 		res.json({
 			code: 0,
 			object
 		})
 	} catch (err) {
+		console.log(err)	
 		res.status(400).send("Имя должно быть уникальным")
 	}
 }
