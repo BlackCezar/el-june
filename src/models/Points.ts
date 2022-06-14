@@ -6,6 +6,9 @@ const pointSchema: Schema = new Schema({
         type: Number,
         required: true
     },
+    name: {
+        type: String
+    },
     type: {
         type: String,
         enum: ['Other', 'City', 'Region', 'Country', 'World'],
