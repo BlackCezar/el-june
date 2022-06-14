@@ -47,12 +47,16 @@ const auth = async (req: Request, res: Response) => {
 
 const logout = async (req: Request, res: Response) => {
 	//@ts-ignore
-	req.session.destroy()
+	delete req.session.isAuth
+	//@ts-ignore
+	delete req.session.user
 	res.json({code: 0})
 }
 
 const list = async (req: Request, res: Response) => {
 	const params = req.query
+
+	if (params.fullname) params.fullname = {$regex: params.fullname}
 	const users = await Users.find(params).populate('parent').populate('group').exec()
 
 	res.json({
