@@ -4,12 +4,14 @@ import Users from './../models/Users'
 import bcrypt from 'bcrypt'
 
 const get = async (req: Request, res: Response) => {
-	const user = await Users.findOne({_id: new Types.ObjectId(req.params.id)})
-
-	res.json({
-		code: 0,
-		object: user
-	})
+	if (req.params.id) {
+		const user = await Users.findOne({_id: new Types.ObjectId(req.params.id)})
+	
+		res.json({
+			code: 0,
+			object: user
+		})
+	} else res.status(400).send('Ошибка в запросе')
 }
 
 const check = async (req: Request, res: Response) => {
@@ -50,6 +52,8 @@ const logout = async (req: Request, res: Response) => {
 	delete req.session.isAuth
 	//@ts-ignore
 	delete req.session.user
+	//@ts-ignore
+	req.session.destroy()
 	res.json({code: 0})
 }
 
@@ -94,27 +98,31 @@ const create = async (req: Request, res: Response) => {
 
 
 const remove = async (req: Request, res: Response) => {
-	const result = await Users.findByIdAndRemove(req.params.id).exec()
-
-	res.json({
-		code: 0,
-		object: result
-	})
+	if (req.params.id) {
+		const result = await Users.findByIdAndRemove(req.params.id).exec()
+	
+		res.json({
+			code: 0,
+			object: result
+		})
+	} else res.status(400).send('Ошибка в запросе')
 }
 
 const update = async (req: Request, res: Response) => {
-	await Users.updateOne({_id: new Types.ObjectId(req.params.id)}, {
-		$set: {
-			...req.body
-		}
-	}).exec()
-
-	const object = await Users.findOne({_id: new Types.ObjectId(req.params.id)})
-
-	res.json({
-		code: 0,
-		object
-	})
+	if (req.params.id) {
+		await Users.updateOne({_id: new Types.ObjectId(req.params.id)}, {
+			$set: {
+				...req.body
+			}
+		}).exec()
+		
+		const object = await Users.findOne({_id: new Types.ObjectId(req.params.id)})
+	
+		res.json({
+			code: 0,
+			object
+		})
+	} else res.status(400).send('Ошибка в запросе')
 }
 
 

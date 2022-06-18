@@ -6,6 +6,7 @@ const gradesSchema: Schema = new Schema({
         type: Number,
         required: true
     },
+    date: String,
     student: {
         type: Schema.Types.ObjectId,
         ref: 'Users'

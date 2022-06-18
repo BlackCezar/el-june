@@ -13,6 +13,9 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
+    "eslint.workingDirectories": [
+        {"mode": "auto"}
+    ],
     "plugins": [
         "@typescript-eslint"
     ],

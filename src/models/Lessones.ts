@@ -3,14 +3,10 @@ import ILesson from '../interfaces/lessons'
 
 const lessonSchema: Schema = new Schema({
     date: {
-        type: Date,
+        type: String,
         required: true
     },
-    subject: {
-        type: Schema.Types.ObjectId,
-        ref: 'Subjects',
-        required: true
-    },
+    subject: String,
     topic: String,
     homework: String,
     teacher: {
@@ -23,10 +19,7 @@ const lessonSchema: Schema = new Schema({
         ref: 'Groups',
         required: true
     },
-    classroom: {
-        type: Schema.Types.ObjectId,
-        ref: 'ClassRooms'
-    },
+    classroom: String,
     order: Number
 }, {
     timestamps: true
