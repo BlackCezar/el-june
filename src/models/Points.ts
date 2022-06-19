@@ -6,13 +6,17 @@ const pointSchema: Schema = new Schema({
         type: Number,
         required: true
     },
-    name: {
-        type: String
+    half: {
+        type: Number
     },
     type: {
         type: String,
         enum: ['Other', 'City', 'Region', 'Country', 'World'],
         required: true
+    },
+    group: {
+        type: Schema.Types.ObjectId,
+        ref: 'Groups',
     },
     student: {
         type: Schema.Types.ObjectId,

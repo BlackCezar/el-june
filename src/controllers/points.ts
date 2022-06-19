@@ -6,7 +6,7 @@ import Points from "../models/Points";
 const get = async (req: Request, res: Response) => {
 	if (req.params.id) {
 		const id = req.params.id || ''
-		const object = await Points.findOne({_id: new Types.ObjectId(id)}).populate('teacher').populate('group')
+		const object = await Points.findOne({_id: new Types.ObjectId(id)}).populate('group')
 	
 		res.json({
 			code: 0,
@@ -18,7 +18,7 @@ const get = async (req: Request, res: Response) => {
 const list = async (req: Request, res: Response) => {
 	const array = await Points.find({
 		...req.query
-	}).populate('teacher').populate('group').exec()
+	}).populate('group').exec()
 
 	res.json({
 		code: 0,

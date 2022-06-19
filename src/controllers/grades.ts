@@ -29,6 +29,8 @@ const list = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
 	const payload = req.body as IGrade
 
+	//@ts-ignore
+	if (payload.hasOwnProperty('lesson') && payload.lesson === '') delete payload.lesson
 	try {
 		const object = await Grades.create(payload)
 
