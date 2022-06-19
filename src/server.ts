@@ -54,6 +54,10 @@ app.use('/api/points', pointsRouter)
 app.use('/api/subjects', subjectsRouter)
 app.use('/api/classrooms', classroomsRouter)
 
+app.use((req, res, next) => {
+  console.log(req.path)
+  next()
+})
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
   start()
