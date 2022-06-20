@@ -6,6 +6,7 @@ export default interface IGrade extends Document{
 	student: Types.ObjectId,
 	date: string,
 	lesson: Types.ObjectId,
+	subject?: string,
 	createdAt?: boolean | string,
 	updatedAt?: boolean | string
 }

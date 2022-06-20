@@ -67,7 +67,16 @@ const create = async (req: Request, res: Response) => {
 	//@ts-ignore
 	if (payload.hasOwnProperty('lesson') && payload.lesson === '') delete payload.lesson
 	try {
+		if (['1', '2', '3'].includes(req.body.date)) {
+			const r = await Grades.deleteMany({
+				date: req.body.date,
+				student: req.body.student,
+				subject: req.body.subject,
+			})
+			console.log(r)
+		}
 		const object = await Grades.create(payload)
+
 
 		res.json({
 			code: 0,
