@@ -36,32 +36,25 @@ const sso = async (req: Request, res : Response ) => {
 	const array = []
 
 	for (const student of students) {
-		let grades = await Grades.find({student: new Types.ObjectId(student._id)}).populate('lesson').exec() as IGrade[]
+		let grades = await Grades.find({student: new Types.ObjectId(student._id), date: '1'}).populate('lesson').exec() as IGrade[]
+		let gradesSecond = await Grades.find({student: new Types.ObjectId(student._id), date: '2'}).populate('lesson').exec() as IGrade[]
 
-		if (half === 1) {
-			const d = new Date()
-			if (d.getMonth() < 6) d.setFullYear(d.getFullYear() - 1)
-			d.setMonth(12)
-			d.setDate(30)
-			grades = grades.filter(g => {
-				const splited = g.date.split('.').map(i => Number(i)) 
-				return new Date(splited[2], splited[1], splited[0]) < d ? g : false
+		if (half === 2) {
+			const sso = gradesSecond.reduce((a, b) => a + b.number, 0) / gradesSecond.length * 2
+			array.push({
+				...student,
+				grades: gradesSecond,
+				sso
 			})
-		} else if (half === 2) {
-			const d = new Date()
-			d.setMonth(6)
-			d.setDate(30)
-			grades = grades.filter(g => {
-				const splited = g.date.split('.').map(i => Number(i)) 
-				return new Date(splited[2], splited[1], splited[0]) < d ? g : false
+		} else if (half === 1) {
+
+			const sso = grades.reduce((a, b) => a + b.number, 0) / grades.length * 2
+			array.push({
+				...student,
+				grades,
+				sso
 			})
 		}
-		const sso = grades.reduce((a, b) => a + b.number, 0) / grades.length * 2
-		array.push({
-			...student,
-			grades,
-			sso
-		})
 	}
 
 
