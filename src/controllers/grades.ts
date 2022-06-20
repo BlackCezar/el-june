@@ -1,6 +1,7 @@
 import {Request, Response} from 'express'
 import {Types} from 'mongoose'
 import IGrade from '../interfaces/grades';
+import IUser from '../interfaces/users';
 import Grades from "../models/Grades";
 
 const get = async (req: Request, res: Response) => {
@@ -24,6 +25,47 @@ const list = async (req: Request, res: Response) => {
 		code: 0,
 		array
 	})
+}
+
+interface IUserSSO extends IUser {
+	grades: [IGrade]
+} 
+
+const sso = async (req: Request, res : Response ) => {
+	let {students, half} = req.body
+	const array = []
+
+	for (const student of students) {
+		let grades = await Grades.find({student: new Types.ObjectId(student._id)}).populate('lesson').exec() as IGrade[]
+
+		if (half === 1) {
+			const d = new Date()
+			if (d.getMonth() < 6) d.setFullYear(d.getFullYear() - 1)
+			d.setMonth(12)
+			d.setDate(30)
+			grades = grades.filter(g => {
+				const splited = g.date.split('.').map(i => Number(i)) 
+				return new Date(splited[2], splited[1], splited[0]) < d ? g : false
+			})
+		} else if (half === 2) {
+			const d = new Date()
+			d.setMonth(6)
+			d.setDate(30)
+			grades = grades.filter(g => {
+				const splited = g.date.split('.').map(i => Number(i)) 
+				return new Date(splited[2], splited[1], splited[0]) < d ? g : false
+			})
+		}
+		const sso = grades.reduce((a, b) => a + b.number, 0) / grades.length
+		array.push({
+			...student,
+			grades,
+			sso
+		})
+	}
+
+
+	res.json(array)
 }
 
 const create = async (req: Request, res: Response) => {
@@ -72,4 +114,4 @@ const update = async (req: Request, res: Response) => {
 	} else res.status(400).send('Ошибка в запросе')
 }
 
-export default {get, list, create, remove, update}
+export default {get, list, create, remove, update, sso}
