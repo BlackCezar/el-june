@@ -56,7 +56,7 @@ const sso = async (req: Request, res : Response ) => {
 				return new Date(splited[2], splited[1], splited[0]) < d ? g : false
 			})
 		}
-		const sso = grades.reduce((a, b) => a + b.number, 0) / grades.length
+		const sso = grades.reduce((a, b) => a + b.number, 0) / grades.length * 2
 		array.push({
 			...student,
 			grades,
