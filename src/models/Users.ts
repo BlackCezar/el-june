@@ -20,7 +20,6 @@ const userSchema: Schema = new Schema({
         enum: ['Student', 'Teacher', 'Parent', 'Admin', 'Deputy', 'ClassRoomTeacher'],
         required: true
     },
-    phone: String,
     birthdate: Date,
     parent: {
         type: Schema.Types.ObjectId,
@@ -31,7 +30,6 @@ const userSchema: Schema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Groups'
     },
-    address: String
 }, {
     timestamps: true
 })

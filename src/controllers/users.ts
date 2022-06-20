@@ -72,8 +72,6 @@ const list = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
 	let data = {
 		login: req.body.login,
-		phone: req.body.phone,
-		address: req.body.address,
 		role: req.body.role,
 		fullname: req.body.fullname,
 		password: await bcrypt.hash(req.body.password, 10),
